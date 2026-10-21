@@ -1,5 +1,6 @@
 
 from pathlib import Path
+import shutil
 
 from langchain_community.document_loaders import (
     TextLoader,
@@ -16,7 +17,7 @@ VECTOR_DB_DIR = BASE_DIR / "chroma_db"
 
 
 def build_vector_store():
-    """Load TXT/PDF documents and create a local ChromaDB vector store."""
+    """Load TXT/PDF documents and create a fresh local vector store."""
 
     document_files = (
         list(DOCUMENTS_DIR.glob("*.txt"))
@@ -27,6 +28,10 @@ def build_vector_store():
         raise FileNotFoundError(
             f"No .txt or .pdf documents found in {DOCUMENTS_DIR}"
         )
+
+    # Remove the previous database to prevent duplicate records.
+    if VECTOR_DB_DIR.exists():
+        shutil.rmtree(VECTOR_DB_DIR)
 
     documents = []
 
@@ -47,6 +52,9 @@ def build_vector_store():
     )
     chunks = splitter.split_documents(documents)
 
+    if not chunks:
+        raise ValueError("No text chunks could be created.")
+
     embeddings = HuggingFaceEmbeddings(
         model_name="sentence-transformers/all-MiniLM-L6-v2"
     )
@@ -65,7 +73,7 @@ def build_vector_store():
 
 
 def ask_question(vector_store, question):
-    """Retrieve the most relevant document chunks for a question."""
+    """Retrieve relevant document chunks for a user's question."""
 
     question = question.strip()
 
@@ -85,7 +93,7 @@ def ask_question(vector_store, question):
 
 
 def main():
-    """Run the interactive document question-answering application."""
+    """Run the interactive document retrieval assistant."""
 
     try:
         vector_store = build_vector_store()
@@ -93,7 +101,7 @@ def main():
         print(f"Error: {error}")
         return
 
-    print("\nDocument Q&A Assistant is ready!")
+    print("\nDocument Retrieval Assistant is ready!")
     print("Ask a question or type 'exit' to quit.")
 
     while True:
