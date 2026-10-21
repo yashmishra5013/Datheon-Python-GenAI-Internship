@@ -1,0 +1,20 @@
+Datheon Python and Generative AI Internship
+
+Task 1: Structured Invoice JSON Extractor
+This project extracts invoice information and validates the output using Pydantic schemas.
+It checks invoice number, invoice date, seller, customer, items, currency, and payment status.
+
+Task 2: RAG Document Question Answering Assistant
+RAG stands for Retrieval-Augmented Generation.
+A RAG system searches documents to find information relevant to a user's question.
+Document text is divided into smaller chunks.
+Embeddings represent text as numerical vectors.
+ChromaDB stores vectors and helps retrieve relevant document chunks.
+The retrieved information is used to answer the user's question.
+
+Python is used to build the application.
+LangChain helps connect document loading, text splitting, and retrieval components.
+Sentence Transformers can generate local text embeddings.
+PDF documents can be read using PyPDF.
+
+The goal is to build a document question-answering system that works without a paid OpenAI API.
